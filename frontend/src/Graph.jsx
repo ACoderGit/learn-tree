@@ -646,15 +646,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
 
     if (borderOnly) {
       const ringR = ringRadiusFor(node);
-      const wash = ctx.createRadialGradient(node.x - ringR * 0.25, node.y - ringR * 0.28, ringR * 0.1, node.x, node.y, ringR);
-      wash.addColorStop(0, `rgba(${cr},${cg},${cb},0.055)`);
-      wash.addColorStop(0.64, `rgba(${cr},${cg},${cb},0.018)`);
-      wash.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, ringR, 0, 2 * Math.PI);
-      ctx.fillStyle = wash;
-      ctx.fill();
-
       ctx.beginPath();
       ctx.arc(node.x, node.y, ringR, 0, 2 * Math.PI);
       ctx.lineWidth = (selected ? 3 : node.anchor ? 2.1 : 1.6) / globalScale;
@@ -700,31 +691,11 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       ctx.fill();
     }
 
-    const body = ctx.createRadialGradient(
-      node.x - r * 0.32,
-      node.y - r * 0.38,
-      r * 0.12,
-      node.x + r * 0.18,
-      node.y + r * 0.24,
-      r * 1.22
-    );
-    if (aged) {
-      body.addColorStop(0, `rgba(158,166,180,${0.92 * ageFade})`);
-      body.addColorStop(0.52, `rgba(105,114,128,${0.78 * ageFade})`);
-      body.addColorStop(1, `rgba(52,59,70,${0.86 * ageFade})`);
-    } else {
-      body.addColorStop(0, `rgba(${Math.min(cr + 58, 255)},${Math.min(cg + 58, 255)},${Math.min(cb + 58, 255)},${0.96 * ageFade})`);
-      body.addColorStop(0.5, `rgba(${cr},${cg},${cb},${0.92 * ageFade})`);
-      body.addColorStop(1, `rgba(${Math.max(cr - 52, 0)},${Math.max(cg - 52, 0)},${Math.max(cb - 52, 0)},${0.96 * ageFade})`);
-    }
     ctx.beginPath();
     ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = body;
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(node.x - r * 0.32, node.y - r * 0.35, Math.max(r * 0.25, 2 / globalScale), 0, 2 * Math.PI);
-    ctx.fillStyle = "rgba(255,255,255,0.18)";
+    ctx.fillStyle = aged
+      ? `rgba(116,124,138,${0.72 * ageFade})`
+      : `rgba(${cr},${cg},${cb},${ageFade})`;
     ctx.fill();
 
     drawConfidenceArc(ctx, node, r, cr, cg, cb, globalScale);
