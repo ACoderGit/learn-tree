@@ -911,6 +911,25 @@ def _repair_tree_levels(graph: dict) -> None:
         if source and target and source.get("level") == 1 and target.get("level") >= 2:
             has_l1_parent.add(target["id"])
 
+    parent_priority = {}
+    for pos, link in enumerate(graph["links"]):
+        source = index.get(link.get("source"))
+        target = index.get(link.get("target"))
+        if not source or not target or link.get("kind") == "weak":
+            continue
+        if source.get("level") >= target.get("level"):
+            continue
+        score = 0
+        if source.get("level") == target.get("level", 0) - 1:
+            score += 20
+        if link.get("kind") == "strong":
+            score += 6
+        score += min(6, link.get("strength", 1))
+        score -= pos * 0.001
+        current = parent_priority.get(target["id"])
+        if current is None or score > current[0]:
+            parent_priority[target["id"]] = (score, source["id"])
+
     graph["links"] = [
         link for link in graph["links"]
         if not (
@@ -922,6 +941,12 @@ def _repair_tree_levels(graph: dict) -> None:
             and index.get(link.get("target"))
             and index[link["source"]].get("level") == 1
             and index[link["target"]].get("level") == 1
+        ) and not (
+            link.get("kind") != "weak"
+            and index.get(link.get("source"))
+            and index.get(link.get("target"))
+            and index[link["source"]].get("level") < index[link["target"]].get("level")
+            and parent_priority.get(link["target"], (None, link["source"]))[1] != link["source"]
         )
     ]
 
