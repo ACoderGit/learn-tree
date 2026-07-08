@@ -77,7 +77,7 @@ export default function App() {
   });
   const [search, setSearch] = useState("");
   const [centerNodeId, setCenterNodeId] = useState(null);
-  const [showView, setShowView] = useState(true);
+  const [showView, setShowView] = useState(false);
   const [showLegend, setShowLegend] = useState(true);
 
   const timeOffset = Math.round(graph.timeOffsetDays || 0);
