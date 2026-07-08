@@ -1,0 +1,8 @@
+{
+  "name": "learn-tree-render",
+  "private": true,
+  "scripts": {
+    "build": "python3 -m pip install -r backend/requirements.txt && npm --prefix frontend ci && npm --prefix frontend run build",
+    "start": "python3 -m uvicorn main:app --app-dir backend --host 0.0.0.0 --port ${PORT:-8000}"
+  }
+}
