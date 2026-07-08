@@ -196,6 +196,138 @@ DEMO_SOURCES = [
         ],
         "reinforces": ["Science"],
     },
+    {
+        "url": "https://en.wikipedia.org/wiki/Linear_algebra",
+        "title": "Linear Algebra",
+        "provider": "demo",
+        "nodes": [
+            {"label": "Mathematics", "level": 0, "parent": None,
+             "summary": "Formal reasoning and quantitative models"},
+            {"label": "Linear Algebra", "level": 1, "parent": "Mathematics",
+             "summary": "Vector spaces and linear maps"},
+            {"label": "Matrices", "level": 2, "parent": "Linear Algebra",
+             "summary": "Rectangular arrays representing transformations"},
+            {"label": "Eigenvectors", "level": 2, "parent": "Linear Algebra",
+             "summary": "Directions preserved by transformations"},
+            {"label": "Vector Spaces", "level": 2, "parent": "Linear Algebra",
+             "summary": "Sets closed under linear combinations"},
+        ],
+        "reinforces": ["Vectors in 2D", "Maths"],
+    },
+    {
+        "url": "https://en.wikipedia.org/wiki/Probability_theory",
+        "title": "Probability Theory",
+        "provider": "demo",
+        "nodes": [
+            {"label": "Mathematics", "level": 0, "parent": None,
+             "summary": "Formal reasoning and quantitative models"},
+            {"label": "Probability", "level": 1, "parent": "Mathematics",
+             "summary": "Reasoning under uncertainty"},
+            {"label": "Random Variables", "level": 2, "parent": "Probability",
+             "summary": "Numerical outcomes of random processes"},
+            {"label": "Expected Value", "level": 2, "parent": "Probability",
+             "summary": "Long-run average outcome"},
+            {"label": "Conditional Probability", "level": 2, "parent": "Probability",
+             "summary": "Updated likelihood with information"},
+        ],
+        "reinforces": ["Game Theory", "Maths"],
+    },
+    {
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs",
+        "title": "Express and Node.js Backend Basics",
+        "provider": "demo",
+        "nodes": [
+            {"label": "Programming", "level": 0, "parent": None,
+             "summary": "Building software systems"},
+            {"label": "Backend APIs", "level": 1, "parent": "Programming",
+             "summary": "Server endpoints for applications"},
+            {"label": "HTTP Routing", "level": 2, "parent": "Backend APIs",
+             "summary": "Mapping requests to handlers"},
+            {"label": "Middleware", "level": 2, "parent": "Backend APIs",
+             "summary": "Reusable request processing layers"},
+            {"label": "JSON API Design", "level": 2, "parent": "Backend APIs",
+             "summary": "Structured client-server data contracts"},
+        ],
+        "reinforces": ["Coding", "React"],
+    },
+    {
+        "url": "https://en.wikipedia.org/wiki/Cell_biology",
+        "title": "Cell Biology",
+        "provider": "demo",
+        "nodes": [
+            {"label": "Science", "level": 0, "parent": None,
+             "summary": "Natural-world concepts and systems"},
+            {"label": "Cell Biology", "level": 1, "parent": "Science",
+             "summary": "Structure and function of cells"},
+            {"label": "Cell Membrane", "level": 2, "parent": "Cell Biology",
+             "summary": "Selective boundary around cells"},
+            {"label": "Organelles", "level": 2, "parent": "Cell Biology",
+             "summary": "Specialized structures inside cells"},
+            {"label": "Cell Signaling", "level": 2, "parent": "Cell Biology",
+             "summary": "Communication between cells"},
+        ],
+        "reinforces": ["Science"],
+    },
+    {
+        "url": "https://en.wikipedia.org/wiki/Muscle_hypertrophy",
+        "title": "Muscle Hypertrophy",
+        "provider": "demo",
+        "nodes": [
+            {"label": "Fitness", "level": 0, "parent": None,
+             "summary": "Training, health, and physical adaptation"},
+            {"label": "Hypertrophy Training", "level": 1, "parent": "Fitness",
+             "summary": "Training to grow muscle"},
+            {"label": "Mechanical Tension", "level": 2, "parent": "Hypertrophy Training",
+             "summary": "Load stimulus for muscle growth"},
+            {"label": "Training Frequency", "level": 2, "parent": "Hypertrophy Training",
+             "summary": "How often muscles are trained"},
+            {"label": "Exercise Selection", "level": 2, "parent": "Hypertrophy Training",
+             "summary": "Choosing movements for stimulus"},
+        ],
+        "reinforces": ["Strength Training", "Progressive Overload", "Gym"],
+    },
+    {
+        "url": "https://en.wikipedia.org/wiki/Japanese_language",
+        "title": "Japanese Language",
+        "provider": "demo",
+        "nodes": [
+            {"label": "Languages", "level": 0, "parent": None,
+             "summary": "Human language learning"},
+            {"label": "Japanese Language Fundamentals", "level": 1,
+             "parent": "Languages",
+             "summary": "Core Japanese writing and grammar"},
+            {"label": "Hiragana", "level": 2, "parent": "Japanese Language Fundamentals",
+             "summary": "Phonetic Japanese syllabary"},
+            {"label": "Katakana", "level": 2, "parent": "Japanese Language Fundamentals",
+             "summary": "Syllabary for foreign words"},
+            {"label": "Basic Particles", "level": 2,
+             "parent": "Japanese Language Fundamentals",
+             "summary": "Markers for sentence roles"},
+        ],
+        "reinforces": ["Languages"],
+    },
+    {
+        "url": "https://www.startupschool.org/",
+        "title": "Startup School Fundamentals",
+        "provider": "demo",
+        "nodes": [
+            {"label": "Entrepreneurship", "level": 0, "parent": None,
+             "summary": "Building and growing ventures"},
+            {"label": "Startup Fundamentals", "level": 1,
+             "parent": "Entrepreneurship",
+             "summary": "Core early-stage company skills"},
+            {"label": "Customer Discovery", "level": 2,
+             "parent": "Startup Fundamentals",
+             "summary": "Learning what customers need"},
+            {"label": "Product-Market Fit", "level": 2,
+             "parent": "Startup Fundamentals",
+             "summary": "Product solves a real demand"},
+            {"label": "Fundraising Basics", "level": 2,
+             "parent": "Startup Fundamentals",
+             "summary": "Raising capital for growth"},
+        ],
+        "reinforces": [],
+    },
 ]
 
 DOMAIN_KEYWORDS = {
@@ -252,6 +384,7 @@ ROOT_ALIASES = {
     "langs": "Languages",
     "foreign languages": "Languages",
     "language learning": "Languages",
+    "science": "Science",
     "entrepreneurship": "Entrepreneurship",
     "entrepreneur": "Entrepreneurship",
     "business": "Entrepreneurship",
@@ -260,6 +393,7 @@ ROOT_ALIASES = {
     "venture": "Entrepreneurship",
     "company building": "Entrepreneurship",
 }
+CANONICAL_ROOTS = {"Coding", "Maths", "Science", "Gym", "Languages", "Entrepreneurship"}
 
 _lock = threading.Lock()
 DEFAULT_PLANE = "Main"
@@ -341,15 +475,21 @@ def _coerce_broad_roots(nodes: list[dict], graph: dict) -> list[dict]:
             needs_entrepreneurship = True
 
         alias_domain = ROOT_ALIASES.get(_norm(n["label"]))
+        broad_domain = alias_domain or _broad_domain_for(n["label"])
         if (
-            alias_domain
+            broad_domain
             and n.get("level") == 0
-            and (_norm(alias_domain) in root_by_norm or alias_domain == "Entrepreneurship")
+            and (_norm(broad_domain) in root_by_norm or broad_domain in CANONICAL_ROOTS)
         ):
-            if alias_domain == "Entrepreneurship" and not entrepreneurship_root:
-                entrepreneurship_root = "Entrepreneurship"
+            if _norm(broad_domain) not in root_by_norm:
+                _ensure_domain_node(clean, graph, broad_domain)
+                root_by_norm[_norm(broad_domain)] = broad_domain
+                broad_roots.append(broad_domain)
+                existing_roots.add(_norm(broad_domain))
+            if broad_domain == "Entrepreneurship" and not entrepreneurship_root:
+                entrepreneurship_root = root_by_norm.get(_norm(broad_domain), "Entrepreneurship")
                 needs_entrepreneurship = True
-            n["label"] = root_by_norm.get(_norm(alias_domain), alias_domain)
+            n["label"] = root_by_norm.get(_norm(broad_domain), broad_domain)
             n["level"] = 0
             n["parent"] = None
             continue
@@ -357,6 +497,11 @@ def _coerce_broad_roots(nodes: list[dict], graph: dict) -> list[dict]:
         if n.get("level") != 0:
             if not n.get("parent"):
                 domain = _broad_domain_for(f"{n.get('label', '')} {n.get('summary', '')}")
+                if domain in CANONICAL_ROOTS and _norm(domain) not in root_by_norm:
+                    _ensure_domain_node(clean, graph, domain)
+                    root_by_norm[_norm(domain)] = domain
+                    broad_roots.append(domain)
+                    existing_roots.add(_norm(domain))
                 if domain == "Entrepreneurship" and not entrepreneurship_root:
                     entrepreneurship_root = "Entrepreneurship"
                     needs_entrepreneurship = True
@@ -371,6 +516,12 @@ def _coerce_broad_roots(nodes: list[dict], graph: dict) -> list[dict]:
         has_existing_domain = domain and _norm(domain) in root_by_norm
         if is_existing_root:
             continue
+        if domain in CANONICAL_ROOTS and _norm(domain) not in root_by_norm:
+            _ensure_domain_node(clean, graph, domain)
+            root_by_norm[_norm(domain)] = domain
+            broad_roots.append(domain)
+            existing_roots.add(_norm(domain))
+            has_existing_domain = True
         if domain == "Entrepreneurship":
             n["label"] = entrepreneurship_root or "Entrepreneurship"
             n["level"] = 0
@@ -624,6 +775,8 @@ def hierarchy_context(graph: dict | None = None) -> list[str]:
     g = graph if graph is not None else load()
     children = {}
     for link in g["links"]:
+        if link.get("kind") == "weak":
+            continue
         children.setdefault(link["source"], []).append(link["target"])
     by_id = {n["id"]: n for n in g["nodes"]}
     lines = []
@@ -712,6 +865,56 @@ def _flatten_level2_parents(graph: dict) -> None:
     seen = {tuple(sorted((l["source"], l["target"]))) for l in graph["links"]}
     for link in rewired:
         _add_link(graph, link["source"], link["target"], seen, link.get("kind", "detail"))
+
+
+def _repair_tree_levels(graph: dict) -> None:
+    """Keep saved levels aligned to the structural links the UI renders."""
+    index = {n["id"]: n for n in graph["nodes"]}
+    root_ids = {
+        n["id"] for n in graph["nodes"]
+        if n.get("level") == 0 or n.get("anchor")
+    }
+    structural = [l for l in graph["links"] if l.get("kind") != "weak"]
+
+    for node in graph["nodes"]:
+        if node["id"] in root_ids:
+            node["level"] = 0
+            node["anchor"] = True
+        else:
+            node["level"] = 2
+            node["anchor"] = False
+
+    l1_ids = {
+        l["target"] for l in structural
+        if l.get("source") in root_ids and l.get("target") in index
+    }
+    for node_id in l1_ids:
+        if node_id not in root_ids:
+            index[node_id]["level"] = 1
+
+    for link in structural:
+        source = index.get(link.get("source"))
+        target = index.get(link.get("target"))
+        if not source or not target or target["id"] in root_ids:
+            continue
+        if source.get("level") == 1 and target["id"] not in l1_ids:
+            target["level"] = 2
+
+    has_l1_parent = set()
+    for link in structural:
+        source = index.get(link.get("source"))
+        target = index.get(link.get("target"))
+        if source and target and source.get("level") == 1 and target.get("level") >= 2:
+            has_l1_parent.add(target["id"])
+
+    graph["links"] = [
+        link for link in graph["links"]
+        if not (
+            link.get("kind") != "weak"
+            and link.get("source") in root_ids
+            and link.get("target") in has_l1_parent
+        )
+    ]
 
 
 # --------------------------------------------------------------------------- #
@@ -804,11 +1007,14 @@ def merge(new_nodes: list[dict], reinforces: list[str], url: str) -> dict:
                 if url and url not in existing["sources"]:
                     existing["sources"].append(url)
                 for main in new_nodes:
+                    if main.get("level") == 0:
+                        continue
                     mid = label_to_id.get(main["label"].lower())
                     if mid and mid != existing["id"]:
                         _add_link(graph, mid, existing["id"], link_seen, "weak")
 
         _flatten_level2_parents(graph)
+        _repair_tree_levels(graph)
         save(graph)
         return graph
 
@@ -827,6 +1033,8 @@ def prune_empty_domains() -> dict:
     """Remove old auto-seeded level-0 domains that have no learned content."""
     with _lock:
         graph = load()
+        before = json.dumps(graph, sort_keys=True)
+        _repair_tree_levels(graph)
         linked = set()
         for link in graph["links"]:
             linked.add(link["source"])
@@ -851,6 +1059,7 @@ def prune_empty_domains() -> dict:
                 l for l in graph["links"]
                 if l["source"] not in removed and l["target"] not in removed
             ]
+        if removed or json.dumps(graph, sort_keys=True) != before:
             save(graph)
         return graph
 

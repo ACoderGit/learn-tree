@@ -343,5 +343,288 @@
       "Science"
     ],
     "provider": "demo"
+  },
+  "https://en.wikipedia.org/wiki/Linear_algebra": {
+    "url": "https://en.wikipedia.org/wiki/Linear_algebra",
+    "title": "Linear Algebra",
+    "nodes": [
+      {
+        "label": "Mathematics",
+        "level": 0,
+        "parent": null,
+        "summary": "Formal reasoning and quantitative models"
+      },
+      {
+        "label": "Linear Algebra",
+        "level": 1,
+        "parent": "Mathematics",
+        "summary": "Vector spaces and linear maps"
+      },
+      {
+        "label": "Matrices",
+        "level": 2,
+        "parent": "Linear Algebra",
+        "summary": "Rectangular arrays representing transformations"
+      },
+      {
+        "label": "Eigenvectors",
+        "level": 2,
+        "parent": "Linear Algebra",
+        "summary": "Directions preserved by transformations"
+      },
+      {
+        "label": "Vector Spaces",
+        "level": 2,
+        "parent": "Linear Algebra",
+        "summary": "Sets closed under linear combinations"
+      }
+    ],
+    "reinforces": [
+      "Vectors in 2D",
+      "Maths"
+    ],
+    "provider": "demo"
+  },
+  "https://en.wikipedia.org/wiki/Probability_theory": {
+    "url": "https://en.wikipedia.org/wiki/Probability_theory",
+    "title": "Probability Theory",
+    "nodes": [
+      {
+        "label": "Mathematics",
+        "level": 0,
+        "parent": null,
+        "summary": "Formal reasoning and quantitative models"
+      },
+      {
+        "label": "Probability",
+        "level": 1,
+        "parent": "Mathematics",
+        "summary": "Reasoning under uncertainty"
+      },
+      {
+        "label": "Random Variables",
+        "level": 2,
+        "parent": "Probability",
+        "summary": "Numerical outcomes of random processes"
+      },
+      {
+        "label": "Expected Value",
+        "level": 2,
+        "parent": "Probability",
+        "summary": "Long-run average outcome"
+      },
+      {
+        "label": "Conditional Probability",
+        "level": 2,
+        "parent": "Probability",
+        "summary": "Updated likelihood with information"
+      }
+    ],
+    "reinforces": [
+      "Game Theory",
+      "Maths"
+    ],
+    "provider": "demo"
+  },
+  "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs": {
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs",
+    "title": "Express and Node.js Backend Basics",
+    "nodes": [
+      {
+        "label": "Programming",
+        "level": 0,
+        "parent": null,
+        "summary": "Building software systems"
+      },
+      {
+        "label": "Backend APIs",
+        "level": 1,
+        "parent": "Programming",
+        "summary": "Server endpoints for applications"
+      },
+      {
+        "label": "HTTP Routing",
+        "level": 2,
+        "parent": "Backend APIs",
+        "summary": "Mapping requests to handlers"
+      },
+      {
+        "label": "Middleware",
+        "level": 2,
+        "parent": "Backend APIs",
+        "summary": "Reusable request processing layers"
+      },
+      {
+        "label": "JSON API Design",
+        "level": 2,
+        "parent": "Backend APIs",
+        "summary": "Structured client-server data contracts"
+      }
+    ],
+    "reinforces": [
+      "Coding",
+      "React"
+    ],
+    "provider": "demo"
+  },
+  "https://en.wikipedia.org/wiki/Cell_biology": {
+    "url": "https://en.wikipedia.org/wiki/Cell_biology",
+    "title": "Cell Biology",
+    "nodes": [
+      {
+        "label": "Science",
+        "level": 0,
+        "parent": null,
+        "summary": "Natural-world concepts and systems"
+      },
+      {
+        "label": "Cell Biology",
+        "level": 1,
+        "parent": "Science",
+        "summary": "Structure and function of cells"
+      },
+      {
+        "label": "Cell Membrane",
+        "level": 2,
+        "parent": "Cell Biology",
+        "summary": "Selective boundary around cells"
+      },
+      {
+        "label": "Organelles",
+        "level": 2,
+        "parent": "Cell Biology",
+        "summary": "Specialized structures inside cells"
+      },
+      {
+        "label": "Cell Signaling",
+        "level": 2,
+        "parent": "Cell Biology",
+        "summary": "Communication between cells"
+      }
+    ],
+    "reinforces": [
+      "Science"
+    ],
+    "provider": "demo"
+  },
+  "https://en.wikipedia.org/wiki/Muscle_hypertrophy": {
+    "url": "https://en.wikipedia.org/wiki/Muscle_hypertrophy",
+    "title": "Muscle Hypertrophy",
+    "nodes": [
+      {
+        "label": "Fitness",
+        "level": 0,
+        "parent": null,
+        "summary": "Training, health, and physical adaptation"
+      },
+      {
+        "label": "Hypertrophy Training",
+        "level": 1,
+        "parent": "Fitness",
+        "summary": "Training to grow muscle"
+      },
+      {
+        "label": "Mechanical Tension",
+        "level": 2,
+        "parent": "Hypertrophy Training",
+        "summary": "Load stimulus for muscle growth"
+      },
+      {
+        "label": "Training Frequency",
+        "level": 2,
+        "parent": "Hypertrophy Training",
+        "summary": "How often muscles are trained"
+      },
+      {
+        "label": "Exercise Selection",
+        "level": 2,
+        "parent": "Hypertrophy Training",
+        "summary": "Choosing movements for stimulus"
+      }
+    ],
+    "reinforces": [
+      "Strength Training",
+      "Progressive Overload",
+      "Gym"
+    ],
+    "provider": "demo"
+  },
+  "https://en.wikipedia.org/wiki/Japanese_language": {
+    "url": "https://en.wikipedia.org/wiki/Japanese_language",
+    "title": "Japanese Language",
+    "nodes": [
+      {
+        "label": "Languages",
+        "level": 0,
+        "parent": null,
+        "summary": "Human language learning"
+      },
+      {
+        "label": "Japanese Language Fundamentals",
+        "level": 1,
+        "parent": "Languages",
+        "summary": "Core Japanese writing and grammar"
+      },
+      {
+        "label": "Hiragana",
+        "level": 2,
+        "parent": "Japanese Language Fundamentals",
+        "summary": "Phonetic Japanese syllabary"
+      },
+      {
+        "label": "Katakana",
+        "level": 2,
+        "parent": "Japanese Language Fundamentals",
+        "summary": "Syllabary for foreign words"
+      },
+      {
+        "label": "Basic Particles",
+        "level": 2,
+        "parent": "Japanese Language Fundamentals",
+        "summary": "Markers for sentence roles"
+      }
+    ],
+    "reinforces": [
+      "Languages"
+    ],
+    "provider": "demo"
+  },
+  "https://www.startupschool.org/": {
+    "url": "https://www.startupschool.org/",
+    "title": "Startup School Fundamentals",
+    "nodes": [
+      {
+        "label": "Entrepreneurship",
+        "level": 0,
+        "parent": null,
+        "summary": "Building and growing ventures"
+      },
+      {
+        "label": "Startup Fundamentals",
+        "level": 1,
+        "parent": "Entrepreneurship",
+        "summary": "Core early-stage company skills"
+      },
+      {
+        "label": "Customer Discovery",
+        "level": 2,
+        "parent": "Startup Fundamentals",
+        "summary": "Learning what customers need"
+      },
+      {
+        "label": "Product-Market Fit",
+        "level": 2,
+        "parent": "Startup Fundamentals",
+        "summary": "Product solves a real demand"
+      },
+      {
+        "label": "Fundraising Basics",
+        "level": 2,
+        "parent": "Startup Fundamentals",
+        "summary": "Raising capital for growth"
+      }
+    ],
+    "reinforces": [],
+    "provider": "demo"
   }
 }
