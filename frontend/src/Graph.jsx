@@ -432,11 +432,11 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       }
       const ux = dx / dist;
       const uy = dy / dist;
-      const target = 330 + Math.min(150, (childCounts[root.id] || 1) * 12);
+      const target = 190 + Math.min(80, (childCounts[root.id] || 1) * 7);
       const closeness = Math.max(0, 1 - dist / target);
-      const outward = closeness * 7.5;
+      const outward = closeness * 1.35;
       const sideSign = (node.seq || 0) % 2 ? 1 : -1;
-      const sideways = closeness * 2.2 * sideSign;
+      const sideways = closeness * 0.55 * sideSign;
 
       node.x += ux * outward + -uy * sideways;
       node.y += uy * outward + ux * sideways;
@@ -465,7 +465,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
           dist = 1;
         }
         if (dist < min) {
-          const push = (min - dist) / 2;
+          const push = Math.min(4, (min - dist) * 0.24);
           const ux = dx / dist;
           const uy = dy / dist;
           a.x -= ux * push;
@@ -790,6 +790,24 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     }
   };
 
+  const handleNodeDragEnd = (node) => {
+    const ids = [
+      node.id,
+      ...(node.anchor
+        ? descendantsByNode[node.id] || []
+        : (node.level ?? 2) === 1
+          ? childrenByNode[node.id] || []
+          : []),
+    ];
+    for (const id of ids) {
+      const n = nodeById[id];
+      if (!n) continue;
+      if (Number.isFinite(n.vx)) n.vx *= 0.2;
+      if (Number.isFinite(n.vy)) n.vy *= 0.2;
+    }
+    fgRef.current?.d3AlphaTarget?.(0);
+  };
+
   return (
     <div
       ref={wrapRef}
@@ -801,8 +819,8 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
         width={size.width}
         height={size.height}
         backgroundColor="rgba(0,0,0,0)"
-        cooldownTime={5200}
-        d3VelocityDecay={0.24}
+        cooldownTime={3600}
+        d3VelocityDecay={0.36}
         nodeRelSize={6}
         nodeCanvasObject={drawNodeSafe}
         nodePointerAreaPaint={(node, color, ctx) => {
@@ -841,6 +859,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
         onRenderFramePre={drawReviewClouds}
         onEngineTick={separateOverlaps}
         onNodeDrag={handleNodeDrag}
+        onNodeDragEnd={handleNodeDragEnd}
         onNodeClick={onNodeClick}
         onBackgroundClick={() => onNodeClick(null)}
       />
