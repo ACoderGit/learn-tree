@@ -502,7 +502,7 @@ html, body, #root {
 .stage {
   position: relative;
   background:
-    linear-gradient(180deg, #0d1319 0%, #111820 100%);
+    linear-gradient(180deg, #121a21 0%, #162028 100%);
   overflow: hidden;
   min-width: 0;
 }
@@ -513,13 +513,13 @@ html, body, #root {
   inset: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 12% 18%, rgba(233, 238, 247, 0.2) 0 1px, transparent 1.7px),
-    radial-gradient(circle at 31% 76%, rgba(233, 238, 247, 0.12) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 48% 34%, rgba(113, 224, 196, 0.1) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 73% 24%, rgba(233, 238, 247, 0.16) 0 1px, transparent 1.8px),
-    linear-gradient(rgba(233, 238, 247, 0.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(233, 238, 247, 0.022) 1px, transparent 1px),
-    radial-gradient(circle, rgba(233, 238, 247, 0.035) 1px, transparent 1px);
+    radial-gradient(circle at 12% 18%, rgba(233, 238, 247, 0.24) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 31% 76%, rgba(233, 238, 247, 0.16) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 48% 34%, rgba(220, 226, 210, 0.13) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 73% 24%, rgba(233, 238, 247, 0.2) 0 1px, transparent 1.8px),
+    linear-gradient(rgba(233, 238, 247, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(233, 238, 247, 0.032) 1px, transparent 1px),
+    radial-gradient(circle, rgba(233, 238, 247, 0.05) 1px, transparent 1px);
   background-size:
     317px 251px,
     283px 337px,
@@ -528,7 +528,7 @@ html, body, #root {
     42px 42px,
     42px 42px,
     9px 9px;
-  opacity: 0.66;
+  opacity: 0.76;
 }
 .graph-canvas.textured::after {
   content: "";
@@ -539,7 +539,7 @@ html, body, #root {
     linear-gradient(135deg, transparent 0 48%, rgba(255,255,255,0.02) 49% 51%, transparent 52% 100%);
   background-size: 88px 88px;
   mix-blend-mode: screen;
-  opacity: 0.32;
+  opacity: 0.42;
 }
 
 /* ---------------- Graph toolbar ---------------- */

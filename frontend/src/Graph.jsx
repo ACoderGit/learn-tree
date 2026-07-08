@@ -13,11 +13,15 @@ function hslToRgb(h, s, l) {
   return [f(0), f(8), f(4)];
 }
 
-// Confidence ramp: muted yellow -> dark green. Saturates at 4 sources.
+// Confidence ramp: orange -> dark green. Saturates at 4 direct sources.
 function confidenceRGB(count) {
   const countValue = count || 0;
-  const t = countValue <= 0 ? 0 : 0.25 + (Math.min(countValue, 4) - 1) * 0.25;
-  return hslToRgb(44 + (118 - 44) * t, 0.58, 0.42 - t * 0.08);
+  const t = Math.min(countValue, 4) / 4;
+  return hslToRgb(26 + (120 - 26) * t, 0.66 - t * 0.08, 0.43 - t * 0.11);
+}
+
+function colorConfidenceFor(node) {
+  return node.sources?.length || node.count || node.visualCount || 0;
 }
 
 function drawWrappedLabel(ctx, text, x, y, maxWidth, lineHeight) {
@@ -527,24 +531,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     ctx.fill("evenodd");
   };
 
-  const drawSourcePips = (ctx, node, r, cr, cg, cb, globalScale) => {
-    const count = Math.min(4, Math.max(0, node.sources?.length || Math.round(node.visualCount || 0)));
-    if (!count) return;
-    const pipR = Math.max(1.5 / globalScale, r * 0.12);
-    const orbit = r + Math.max(3 / globalScale, r * 0.18);
-    const start = -Math.PI / 2 - (count - 1) * 0.22;
-    for (let i = 0; i < count; i += 1) {
-      const a = start + i * 0.44;
-      ctx.beginPath();
-      ctx.arc(node.x + Math.cos(a) * orbit, node.y + Math.sin(a) * orbit, pipR, 0, 2 * Math.PI);
-      ctx.fillStyle = `rgba(${cr},${cg},${cb},0.9)`;
-      ctx.fill();
-      ctx.lineWidth = 0.8 / globalScale;
-      ctx.strokeStyle = "rgba(7,10,14,0.78)";
-      ctx.stroke();
-    }
-  };
-
   const drawReviewClouds = (ctx) => {
     if (options.aging === "none") return;
     const candidates = graphData.nodes.filter((node) => {
@@ -599,7 +585,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
 
     const r = radiusFor(node);
     if (!Number.isFinite(r) || r <= 0) return;
-    const [cr, cg, cb] = confidenceRGB(node.visualCount ?? node.count);
+    const [cr, cg, cb] = confidenceRGB(colorConfidenceFor(node));
     const selected = node.id === selectedId;
     const stale = node.reviewDue || (node.ageDays ?? 0) >= 14;
     const ageFade = Math.max(0.45, 1 - Math.min(node.ageDays || 0, 45) / 90);
@@ -649,9 +635,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       : `rgba(${cr},${cg},${cb},${0.94 * ageFade})`;
     ctx.fill();
 
-    if ((node.level ?? 2) <= 1) {
-      drawSourcePips(ctx, node, r, cr, cg, cb, globalScale);
-    }
     ctx.lineWidth = (selected ? 2.2 : 1.1) / globalScale;
     ctx.strokeStyle = selected
       ? "#ffffff"
@@ -720,7 +703,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     } catch {
       if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) return;
       const r = Math.max(6, Math.min(18, radiusFor(node) || 8));
-      const [cr, cg, cb] = confidenceRGB(node.visualCount ?? node.count);
+      const [cr, cg, cb] = confidenceRGB(colorConfidenceFor(node));
       ctx.beginPath();
       ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
       ctx.fillStyle = `rgba(${cr},${cg},${cb},0.9)`;
