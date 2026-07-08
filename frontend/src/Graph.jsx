@@ -13,11 +13,11 @@ function hslToRgb(h, s, l) {
   return [f(0), f(8), f(4)];
 }
 
-// Confidence ramp: dark orange -> darker green. Saturates at 4 sources.
+// Confidence ramp: muted yellow -> dark green. Saturates at 4 sources.
 function confidenceRGB(count) {
   const countValue = count || 0;
   const t = countValue <= 0 ? 0 : 0.25 + (Math.min(countValue, 4) - 1) * 0.25;
-  return hslToRgb(25 + (132 - 25) * t, 0.78, 0.38 - t * 0.02);
+  return hslToRgb(44 + (118 - 44) * t, 0.58, 0.42 - t * 0.08);
 }
 
 function drawWrappedLabel(ctx, text, x, y, maxWidth, lineHeight) {
@@ -649,7 +649,9 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       : `rgba(${cr},${cg},${cb},${0.94 * ageFade})`;
     ctx.fill();
 
-    drawSourcePips(ctx, node, r, cr, cg, cb, globalScale);
+    if ((node.level ?? 2) <= 1) {
+      drawSourcePips(ctx, node, r, cr, cg, cb, globalScale);
+    }
     ctx.lineWidth = (selected ? 2.2 : 1.1) / globalScale;
     ctx.strokeStyle = selected
       ? "#ffffff"
