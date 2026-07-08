@@ -36,10 +36,18 @@ EXISTING NODES:
 ], "reinforces": ["Existing Node Label"]}}
 
 Rules:
-- You are NOT allowed to create level-0 nodes.
+- You are NOT allowed to create level-0 nodes except for exactly one case: \
+if the source is clearly about entrepreneurship, startups, business models, \
+sales, marketing, fundraising, product-market fit, or company building, and \
+there is no existing "Entrepreneurship" level-0 node shown above, you may \
+output {{"label": "Entrepreneurship", "level": 0, "parent": "", "summary": "Building and growing ventures"}}.
+- If "Entrepreneurship" already exists, reuse that exact existing level-0 \
+label and add new level-1/level-2 nodes under it. Do not create "Business", \
+"Startups", "Venture", or similar as a separate level-0.
 - Every main node must be placed under one of the existing level-0 nodes shown \
-above. Choose the closest existing root even if the fit is broad.
-- level 0 = existing broad domains only. Never output level 0.
+above, except for the allowed new "Entrepreneurship" case.
+- level 0 = existing broad domains plus the allowed new "Entrepreneurship" \
+domain only.
 - level 1 = topic, level 2 = narrow subtopic or skill.
 - Do not create level-0 nodes for course topics, chapters, techniques, tools, \
 lesson subjects, subfields, or synonyms of existing domains. Those belong under \
@@ -47,6 +55,11 @@ an existing broad domain or should reinforce it.
 - If nothing is a perfect fit, choose the least-wrong existing level-0 node.
 - If an existing level-0 fits but no level-1 fits, create a level-1 under that \
 existing level-0.
+- Entrepreneurship, startups, business strategy, sales, marketing, fundraising, \
+product-market fit, customer discovery, operations, and company-building \
+topics belong under "Entrepreneurship" if that node exists. If it does not \
+exist and the source is clearly in this area, create "Entrepreneurship" as \
+the only new level-0.
 - If an existing level-1 fits but no level-2 fits, create a level-2 under that \
 existing level-1.
 - If an existing level-2 already fits, reuse that exact label instead of making \
@@ -88,7 +101,7 @@ ANTHROPIC_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "label": {"type": "string"},
-                    "level": {"type": "integer", "enum": [1, 2]},
+                    "level": {"type": "integer", "enum": [0, 1, 2]},
                     "parent": {"type": "string"},
                     "summary": {"type": "string"},
                 },
@@ -146,7 +159,7 @@ def _parse_topic_response(raw: str) -> tuple[list[dict], list[str]] | None:
         parent = str(n.get("parent", "")).strip()
         clean.append({
             "label": label[:60],
-            "level": max(1, min(2, level)),
+            "level": max(0, min(2, level)),
             "parent": parent,
             "summary": str(n.get("summary", "")).strip()[:120],
         })

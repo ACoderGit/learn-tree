@@ -224,6 +224,13 @@ DOMAIN_KEYWORDS = {
         "nutrient", "macronutrient", "protein", "carbohydrate", "digestion",
         "absorption", "hypertrophy", "mobility",
     ],
+    "Entrepreneurship": [
+        "entrepreneurship", "entrepreneur", "startup", "startups", "business",
+        "business model", "company building", "venture", "fundraising",
+        "sales", "marketing", "customer discovery", "product market fit",
+        "product-market fit", "go to market", "go-to-market", "revenue",
+        "pricing", "operations", "pitch", "investor", "founder",
+    ],
 }
 
 ROOT_ALIASES = {
@@ -245,6 +252,13 @@ ROOT_ALIASES = {
     "langs": "Languages",
     "foreign languages": "Languages",
     "language learning": "Languages",
+    "entrepreneurship": "Entrepreneurship",
+    "entrepreneur": "Entrepreneurship",
+    "business": "Entrepreneurship",
+    "startup": "Entrepreneurship",
+    "startups": "Entrepreneurship",
+    "venture": "Entrepreneurship",
+    "company building": "Entrepreneurship",
 }
 
 _lock = threading.Lock()
@@ -293,6 +307,13 @@ def _ensure_domain_node(nodes: list[dict], graph: dict, domain: str) -> None:
     })
 
 
+def _existing_root_label(graph: dict, label: str) -> str | None:
+    for node in graph["nodes"]:
+        if node.get("level") == 0 and _match(node["label"], label):
+            return node["label"]
+    return None
+
+
 def _coerce_broad_roots(nodes: list[dict], graph: dict) -> list[dict]:
     """Force extracted topics into the existing level-0 roots."""
     clean = [dict(n) for n in nodes]
@@ -302,15 +323,33 @@ def _coerce_broad_roots(nodes: list[dict], graph: dict) -> list[dict]:
     }
     broad_roots = [n["label"] for n in graph["nodes"] if n.get("level") == 0]
     root_by_norm = {_norm(n["label"]): n["label"] for n in graph["nodes"] if n.get("level") == 0}
+    entrepreneurship_root = _existing_root_label(graph, "Entrepreneurship")
+    needs_entrepreneurship = False
     for n in clean:
         n["level"] = max(0, min(2, int(n.get("level", 1))))
         parent = n.get("parent")
         if parent and _norm(parent) in ROOT_ALIASES:
             n["parent"] = ROOT_ALIASES[_norm(parent)]
+            parent = n["parent"]
+        if (
+            n.get("level") != 0
+            and parent
+            and _match(parent, "Entrepreneurship")
+            and not entrepreneurship_root
+        ):
+            entrepreneurship_root = "Entrepreneurship"
+            needs_entrepreneurship = True
 
         alias_domain = ROOT_ALIASES.get(_norm(n["label"]))
-        if alias_domain and _norm(alias_domain) in root_by_norm:
-            n["label"] = root_by_norm[_norm(alias_domain)]
+        if (
+            alias_domain
+            and n.get("level") == 0
+            and (_norm(alias_domain) in root_by_norm or alias_domain == "Entrepreneurship")
+        ):
+            if alias_domain == "Entrepreneurship" and not entrepreneurship_root:
+                entrepreneurship_root = "Entrepreneurship"
+                needs_entrepreneurship = True
+            n["label"] = root_by_norm.get(_norm(alias_domain), alias_domain)
             n["level"] = 0
             n["parent"] = None
             continue
@@ -318,13 +357,26 @@ def _coerce_broad_roots(nodes: list[dict], graph: dict) -> list[dict]:
         if n.get("level") != 0:
             if not n.get("parent"):
                 domain = _broad_domain_for(f"{n.get('label', '')} {n.get('summary', '')}")
-                n["parent"] = root_by_norm.get(_norm(domain), broad_roots[0] if broad_roots else None)
+                if domain == "Entrepreneurship" and not entrepreneurship_root:
+                    entrepreneurship_root = "Entrepreneurship"
+                    needs_entrepreneurship = True
+                n["parent"] = root_by_norm.get(
+                    _norm(domain),
+                    entrepreneurship_root if domain == "Entrepreneurship" else broad_roots[0] if broad_roots else None,
+                )
             continue
 
         domain = _broad_domain_for(n["label"])
         is_existing_root = _norm(n["label"]) in existing_roots
         has_existing_domain = domain and _norm(domain) in root_by_norm
         if is_existing_root:
+            continue
+        if domain == "Entrepreneurship":
+            n["label"] = entrepreneurship_root or "Entrepreneurship"
+            n["level"] = 0
+            n["parent"] = None
+            entrepreneurship_root = n["label"]
+            needs_entrepreneurship = True
             continue
 
         n["level"] = 1
@@ -333,10 +385,16 @@ def _coerce_broad_roots(nodes: list[dict], graph: dict) -> list[dict]:
         elif broad_roots:
             summary_domain = _broad_domain_for(n.get("summary", ""))
             summary_key = _norm(summary_domain) if summary_domain else ""
+            if summary_domain == "Entrepreneurship" and not entrepreneurship_root:
+                entrepreneurship_root = "Entrepreneurship"
+                needs_entrepreneurship = True
             n["parent"] = root_by_norm.get(
                 summary_key,
+                entrepreneurship_root if summary_domain == "Entrepreneurship" else
                 "Maths" if "Maths" in broad_roots else broad_roots[0],
             )
+    if needs_entrepreneurship:
+        _ensure_domain_node(clean, graph, "Entrepreneurship")
     return clean
 
 
