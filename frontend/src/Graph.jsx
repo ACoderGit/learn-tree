@@ -505,19 +505,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     return () => clearTimeout(t);
   }, [centerNodeId, nodeById]);
 
-  const drawOuterReviewSmoke = (ctx, x, y, innerR, outerR, opacity = 1) => {
-    const cloud = ctx.createRadialGradient(x, y, innerR * 0.72, x, y, outerR);
-    cloud.addColorStop(0, "rgba(235, 240, 248, 0)");
-    cloud.addColorStop(0.25, `rgba(235, 240, 248, ${0.08 * opacity})`);
-    cloud.addColorStop(0.58, `rgba(190, 198, 210, ${0.17 * opacity})`);
-    cloud.addColorStop(1, "rgba(148, 156, 170, 0)");
-    ctx.beginPath();
-    ctx.arc(x, y, outerR, 0, 2 * Math.PI);
-    ctx.arc(x, y, innerR, 0, 2 * Math.PI, true);
-    ctx.fillStyle = cloud;
-    ctx.fill("evenodd");
-  };
-
   const drawReviewClouds = (ctx) => {
     if (options.aging === "none") return;
     const candidates = graphData.nodes.filter((node) => {
@@ -529,8 +516,8 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       const ids = [root.id, ...(descendantsByNode[root.id] || [])];
       const branch = ids.map((id) => nodeById[id]).filter(Boolean);
       const staleNodes = branch.filter((n) => !n.anchor && (n.reviewDue || (n.ageDays ?? 0) >= 7));
-      if (staleNodes.length < 3 || staleNodes.length / Math.max(1, branch.length - 1) < 0.58) continue;
-      const positioned = branch.filter((n) => Number.isFinite(n.x) && Number.isFinite(n.y));
+      if (staleNodes.length < 2 || staleNodes.length / Math.max(1, branch.length - 1) < 0.45) continue;
+      const positioned = staleNodes.filter((n) => Number.isFinite(n.x) && Number.isFinite(n.y));
       if (positioned.length < 3) continue;
 
       let minX = Infinity;
@@ -549,18 +536,26 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
 
       const cx = (minX + maxX) / 2;
       const cy = (minY + maxY) / 2;
-      const rx = Math.max(95, (maxX - minX) / 2 + 76);
-      const ry = Math.max(80, (maxY - minY) / 2 + 66);
-      const grad = ctx.createRadialGradient(cx, cy, Math.min(rx, ry) * 0.22, cx, cy, Math.max(rx, ry));
-      grad.addColorStop(0, "rgba(235, 240, 248, 0.02)");
-      grad.addColorStop(0.42, "rgba(220, 226, 236, 0.09)");
-      grad.addColorStop(0.72, "rgba(160, 168, 182, 0.16)");
+      const rx = Math.max(150, (maxX - minX) / 2 + 138);
+      const ry = Math.max(120, (maxY - minY) / 2 + 112);
+      const cloudR = Math.max(rx, ry);
+      const grad = ctx.createRadialGradient(cx, cy, cloudR * 0.12, cx, cy, cloudR);
+      grad.addColorStop(0, "rgba(235, 240, 248, 0.015)");
+      grad.addColorStop(0.34, "rgba(226, 231, 239, 0.06)");
+      grad.addColorStop(0.68, "rgba(174, 183, 196, 0.13)");
       grad.addColorStop(1, "rgba(148, 156, 170, 0)");
 
       ctx.save();
       ctx.beginPath();
       ctx.ellipse(cx, cy, rx, ry, 0, 0, 2 * Math.PI);
       ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.globalAlpha = 0.42;
+      ctx.beginPath();
+      ctx.ellipse(cx - rx * 0.16, cy + ry * 0.08, rx * 0.72, ry * 0.56, -0.18, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cx + rx * 0.18, cy - ry * 0.1, rx * 0.58, ry * 0.48, 0.22, 0, 2 * Math.PI);
       ctx.fill();
       ctx.restore();
     }
@@ -578,12 +573,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     const ageFade = Math.max(0.45, 1 - Math.min(node.ageDays || 0, 45) / 90);
     const aged = options.aging !== "none" && stale;
     const borderOnly = node.anchor || ((node.level ?? 2) === 1 && childCounts[node.id]);
-
-    if (aged) {
-      const innerR = (borderOnly ? ringRadiusFor(node) : r) * 1.08;
-      const outerR = innerR * (borderOnly ? 3.1 : 4.2);
-      drawOuterReviewSmoke(ctx, node.x, node.y, innerR, outerR, borderOnly ? 0.9 : 1);
-    }
 
     if (borderOnly) {
       const ringR = ringRadiusFor(node);
