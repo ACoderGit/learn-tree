@@ -918,10 +918,10 @@ def _repair_tree_levels(graph: dict) -> None:
             and link.get("source") in root_ids
             and link.get("target") in has_l1_parent
         ) and not (
-            link.get("kind") != "weak"
-            and index.get(link.get("source"))
+            index.get(link.get("source"))
             and index.get(link.get("target"))
-            and index[link["source"]].get("level") == index[link["target"]].get("level")
+            and index[link["source"]].get("level") == 1
+            and index[link["target"]].get("level") == 1
         )
     ]
 
