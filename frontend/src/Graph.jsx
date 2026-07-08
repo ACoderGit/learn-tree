@@ -261,10 +261,10 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
         return importantLink(l) ? 265 : 175 + lvl * 28;
       })
       .strength((l) => {
-        if (l.kind === "weak") return 0.06;
-        if (highLevelLink(l)) return 0.192;
-        if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 0.2;
-        return importantLink(l) ? 0.1 : 0.13;
+        if (l.kind === "weak") return 0.08;
+        if (highLevelLink(l)) return 0.28;
+        if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 0.26;
+        return importantLink(l) ? 0.16 : 0.18;
       });
     fg.d3ReheatSimulation();
     const settle = setTimeout(() => {
@@ -545,38 +545,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     }
   };
 
-  const drawConfidenceArc = (ctx, node, r, cr, cg, cb, globalScale) => {
-    const value = Math.max(0, Math.min(1, (node.confidencePercent ?? 0) / 100));
-    if (value <= 0) return;
-    const start = -Math.PI / 2;
-    const end = start + Math.PI * 2 * value;
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, r + 3 / globalScale, start, end);
-    ctx.lineWidth = Math.max(1.1 / globalScale, r * 0.09);
-    ctx.lineCap = "round";
-    ctx.strokeStyle = `rgba(${cr},${cg},${cb},0.82)`;
-    ctx.stroke();
-    ctx.lineCap = "butt";
-  };
-
-  const drawRingTicks = (ctx, node, ringR, cr, cg, cb, globalScale) => {
-    const ticks = Math.min(14, Math.max(4, childCounts[node.id] || 0));
-    const lit = Math.min(ticks, Math.max(1, Math.round(((node.confidencePercent ?? 20) / 100) * ticks)));
-    for (let i = 0; i < ticks; i += 1) {
-      const a = -Math.PI / 2 + (i / ticks) * Math.PI * 2;
-      const inner = ringR + 3 / globalScale;
-      const outer = ringR + (i < lit ? 8 : 5) / globalScale;
-      ctx.beginPath();
-      ctx.moveTo(node.x + Math.cos(a) * inner, node.y + Math.sin(a) * inner);
-      ctx.lineTo(node.x + Math.cos(a) * outer, node.y + Math.sin(a) * outer);
-      ctx.lineWidth = (i < lit ? 1.6 : 0.8) / globalScale;
-      ctx.strokeStyle = i < lit
-        ? `rgba(${cr},${cg},${cb},${node.anchor ? 0.72 : 0.58})`
-        : "rgba(140,153,168,0.18)";
-      ctx.stroke();
-    }
-  };
-
   const drawReviewClouds = (ctx) => {
     if (options.aging === "none") return;
     const candidates = graphData.nodes.filter((node) => {
@@ -646,28 +614,13 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
 
     if (borderOnly) {
       const ringR = ringRadiusFor(node);
-      const wash = ctx.createRadialGradient(node.x - ringR * 0.25, node.y - ringR * 0.28, ringR * 0.1, node.x, node.y, ringR);
-      wash.addColorStop(0, `rgba(${cr},${cg},${cb},0.055)`);
-      wash.addColorStop(0.64, `rgba(${cr},${cg},${cb},0.018)`);
-      wash.addColorStop(1, "rgba(0,0,0,0)");
       ctx.beginPath();
       ctx.arc(node.x, node.y, ringR, 0, 2 * Math.PI);
-      ctx.fillStyle = wash;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, ringR, 0, 2 * Math.PI);
-      ctx.lineWidth = (selected ? 3 : node.anchor ? 2.1 : 1.6) / globalScale;
+      ctx.lineWidth = (selected ? 3 : node.anchor ? 2.3 : 1.8) / globalScale;
       ctx.strokeStyle = selected
         ? "#ffffff"
         : `rgba(${cr},${cg},${cb},${node.anchor ? 0.88 : 0.7})`;
       ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, ringR - 7 / globalScale, 0, 2 * Math.PI);
-      ctx.lineWidth = 0.75 / globalScale;
-      ctx.strokeStyle = `rgba(${cr},${cg},${cb},${node.anchor ? 0.22 : 0.16})`;
-      ctx.stroke();
-      drawRingTicks(ctx, node, ringR, cr, cg, cb, globalScale);
 
       if (node.label) {
         ctx.textAlign = "center";
@@ -689,55 +642,21 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       return;
     }
 
-    if (!aged) {
-      const glow = r * (1.25 + Math.min((node.visualCount ?? node.count ?? 1) * 0.08, 0.55));
-      const grad = ctx.createRadialGradient(node.x, node.y, r * 0.4, node.x, node.y, glow);
-      grad.addColorStop(0, `rgba(${cr},${cg},${cb},${0.42 * ageFade})`);
-      grad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, glow, 0, 2 * Math.PI);
-      ctx.fillStyle = grad;
-      ctx.fill();
-    }
-
-    const body = ctx.createRadialGradient(
-      node.x - r * 0.32,
-      node.y - r * 0.38,
-      r * 0.12,
-      node.x + r * 0.18,
-      node.y + r * 0.24,
-      r * 1.22
-    );
-    if (aged) {
-      body.addColorStop(0, `rgba(158,166,180,${0.92 * ageFade})`);
-      body.addColorStop(0.52, `rgba(105,114,128,${0.78 * ageFade})`);
-      body.addColorStop(1, `rgba(52,59,70,${0.86 * ageFade})`);
-    } else {
-      body.addColorStop(0, `rgba(${Math.min(cr + 58, 255)},${Math.min(cg + 58, 255)},${Math.min(cb + 58, 255)},${0.96 * ageFade})`);
-      body.addColorStop(0.5, `rgba(${cr},${cg},${cb},${0.92 * ageFade})`);
-      body.addColorStop(1, `rgba(${Math.max(cr - 52, 0)},${Math.max(cg - 52, 0)},${Math.max(cb - 52, 0)},${0.96 * ageFade})`);
-    }
     ctx.beginPath();
     ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = body;
+    ctx.fillStyle = aged
+      ? `rgba(105,114,128,${0.86 * ageFade})`
+      : `rgba(${cr},${cg},${cb},${0.94 * ageFade})`;
     ctx.fill();
 
-    ctx.beginPath();
-    ctx.arc(node.x - r * 0.32, node.y - r * 0.35, Math.max(r * 0.25, 2 / globalScale), 0, 2 * Math.PI);
-    ctx.fillStyle = "rgba(255,255,255,0.18)";
-    ctx.fill();
-
-    drawConfidenceArc(ctx, node, r, cr, cg, cb, globalScale);
     drawSourcePips(ctx, node, r, cr, cg, cb, globalScale);
-    if (selected || aged) {
-      ctx.lineWidth = 2 / globalScale;
-      ctx.strokeStyle = selected
-        ? "#ffffff"
-        : aged
-          ? "rgba(190,198,210,0.74)"
-          : "rgba(233,238,247,0.85)";
-      ctx.stroke();
-    }
+    ctx.lineWidth = (selected ? 2.2 : 1.1) / globalScale;
+    ctx.strokeStyle = selected
+      ? "#ffffff"
+      : aged
+        ? "rgba(190,198,210,0.74)"
+        : `rgba(${cr},${cg},${cb},0.7)`;
+    ctx.stroke();
     if (aged && options.aging === "cracks") {
       ctx.save();
       ctx.beginPath();
