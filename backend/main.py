@@ -116,6 +116,8 @@ def add(req: AddRequest):
     added, provider = [], "heuristic"
     for url in urls:
         cached = graph_store.cached_source(url)
+        if cached and extractor.is_youtube_url(url) and cached.get("provider") != "demo":
+            cached = None
         if cached:
             nodes = cached["nodes"]
             reinforces = cached.get("reinforces", [])

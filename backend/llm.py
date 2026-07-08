@@ -12,13 +12,13 @@ from collections import Counter
 
 import requests
 
-# Cost guardrails: cap how much text we send in and how much the model can emit.
-MAX_CHARS = 6000          # ~1.5k input tokens per request, regardless of page size
-MAX_OUTPUT_TOKENS = 1400  # ample for <=10 nodes + reinforcements; caps spend
+# Cost guardrails: enough room for a real video transcript while still capping spend.
+MAX_CHARS = 20000         # roughly 5k input tokens, enough for most transcripts
+MAX_OUTPUT_TOKENS = 2200  # room for structured nodes + reinforcements
 
 PROMPT = """You are mapping a person's knowledge from something they just studied. \
 Extract the actual concepts and skills this content TEACHES — the things the person \
-now understands — as a small hierarchy of at most 10 main nodes.
+now understands — as a small hierarchy of at most 14 main nodes.
 
 The learner already has this level-0/level-1/level-2 tree. Your job is to \
 insert this source into that structure, not invent a parallel taxonomy. Before \

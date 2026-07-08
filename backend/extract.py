@@ -4,14 +4,17 @@ Handles YouTube (via transcripts) and generic web articles (via trafilatura).
 Everything degrades gracefully — a failure returns whatever we could get so the
 rest of the pipeline still runs.
 """
+import html as html_lib
+import json
 import re
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urlunparse
 
 import requests
 import trafilatura
 
 
 YOUTUBE_HOSTS = {"youtube.com", "www.youtube.com", "youtu.be", "m.youtube.com"}
+TRANSCRIPT_LANGUAGES = ("en", "en-US", "en-GB")
 
 
 def _fetch_url(url: str) -> str:
@@ -79,39 +82,172 @@ def _youtube_id(url: str) -> str | None:
     return None
 
 
+def is_youtube_url(url: str) -> bool:
+    return _youtube_id(url) is not None
+
+
+def _join_transcript(snippets) -> str:
+    parts = []
+    for snippet in snippets or []:
+        if isinstance(snippet, dict):
+            text = snippet.get("text", "")
+        else:
+            text = getattr(snippet, "text", "")
+        text = re.sub(r"\s+", " ", text).strip()
+        if text:
+            parts.append(text)
+    return " ".join(parts)
+
+
 def _youtube_transcript(video_id: str) -> str:
     """Fetch a transcript across youtube-transcript-api v0.x and v1.x APIs."""
     from youtube_transcript_api import YouTubeTranscriptApi
 
-    # v1.x: instance .fetch() returning snippet objects with .text
+    # v1.x: instance .fetch() returning snippet objects with .text.
     try:
         api = YouTubeTranscriptApi()
-        fetched = api.fetch(video_id)
-        return " ".join(getattr(s, "text", "") for s in fetched)
+        text = _join_transcript(api.fetch(video_id, languages=TRANSCRIPT_LANGUAGES))
+        if text:
+            return text
     except AttributeError:
         pass
     except Exception:
-        return ""
+        pass
+
+    # v1.x fallback: inspect available transcripts, prefer English, then
+    # translate a translatable transcript to English if YouTube allows it.
+    try:
+        transcripts = YouTubeTranscriptApi().list(video_id)
+        for finder in (transcripts.find_manually_created_transcript,
+                       transcripts.find_generated_transcript,
+                       transcripts.find_transcript):
+            try:
+                transcript = finder(TRANSCRIPT_LANGUAGES)
+                text = _join_transcript(transcript.fetch())
+                if text:
+                    return text
+            except Exception:
+                pass
+        for transcript in transcripts:
+            try:
+                if getattr(transcript, "is_translatable", False):
+                    text = _join_transcript(transcript.translate("en").fetch())
+                else:
+                    text = _join_transcript(transcript.fetch())
+                if text:
+                    return text
+            except Exception:
+                pass
+    except AttributeError:
+        pass
+    except Exception:
+        pass
 
     # v0.x: static .get_transcript() returning list of dicts
     try:
-        chunks = YouTubeTranscriptApi.get_transcript(video_id)
-        return " ".join(c.get("text", "") for c in chunks)
+        chunks = YouTubeTranscriptApi.get_transcript(video_id, languages=TRANSCRIPT_LANGUAGES)
+        return _join_transcript(chunks)
     except Exception:
         return ""
+
+
+def _caption_url_with_json(base_url: str) -> str:
+    parsed = urlparse(html_lib.unescape(base_url))
+    query = dict(parse_qsl(parsed.query))
+    query.setdefault("fmt", "json3")
+    return urlunparse(parsed._replace(query=urlencode(query)))
+
+
+def _timedtext_to_text(raw: str) -> str:
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        # XML fallback.
+        return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html_lib.unescape(raw))).strip()
+
+    parts = []
+    for event in data.get("events", []):
+        for seg in event.get("segs", []):
+            text = re.sub(r"\s+", " ", seg.get("utf8", "")).strip()
+            if text:
+                parts.append(text)
+    return " ".join(parts)
+
+
+def _youtube_transcript_from_html(downloaded: str) -> str:
+    if not downloaded:
+        return ""
+
+    match = re.search(r'"captionTracks":(\[.*?\])\s*,\s*"audioTracks"', downloaded)
+    if not match:
+        match = re.search(r'"captionTracks":(\[.*?\])\s*,\s*"translationLanguages"', downloaded)
+    if not match:
+        return ""
+
+    try:
+        tracks = json.loads(html_lib.unescape(match.group(1)))
+    except json.JSONDecodeError:
+        return ""
+
+    def score(track):
+        lang = track.get("languageCode", "")
+        kind = track.get("kind", "")
+        if lang in TRANSCRIPT_LANGUAGES and kind != "asr":
+            return 0
+        if lang.startswith("en") and kind != "asr":
+            return 1
+        if lang in TRANSCRIPT_LANGUAGES:
+            return 2
+        if lang.startswith("en"):
+            return 3
+        return 4
+
+    for track in sorted(tracks, key=score):
+        base_url = track.get("baseUrl")
+        if not base_url:
+            continue
+        try:
+            r = requests.get(_caption_url_with_json(base_url), timeout=15)
+            if r.ok and r.text:
+                text = _timedtext_to_text(r.text)
+                if text:
+                    return text
+        except Exception:
+            pass
+    return ""
+
+
+def _youtube_title(url: str, video_id: str) -> str:
+    try:
+        r = requests.get(
+            "https://www.youtube.com/oembed",
+            params={"url": url, "format": "json"},
+            timeout=8,
+        )
+        if r.ok:
+            title = (r.json().get("title") or "").strip()
+            if title:
+                return title
+    except Exception:
+        pass
+    return f"YouTube video {video_id}"
 
 
 def _extract_youtube(video_id: str, url: str) -> dict:
     text = _youtube_transcript(video_id)
 
-    title = f"YouTube video {video_id}"
+    title = _youtube_title(url, video_id)
     downloaded = _fetch_url(url)
     if downloaded:
         meta = trafilatura.extract_metadata(downloaded)
         if meta and meta.title:
             title = meta.title
         if not text:
+            text = _youtube_transcript_from_html(downloaded)
+        if not text:
             text = trafilatura.extract(downloaded) or ""
+    if not text:
+        text = _fallback_text(url, title)
 
     return {"url": url, "title": title, "text": text}
 
