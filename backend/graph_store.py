@@ -752,6 +752,10 @@ def public(graph: dict) -> dict:
         nodes.append(item)
     links = []
     for link in graph["links"]:
+        source = by_id.get(link.get("source"))
+        target = by_id.get(link.get("target"))
+        if source and target and source.get("level") == target.get("level"):
+            continue
         item = dict(link)
         item.setdefault("kind", "detail")
         item.setdefault("strength", 3 if item["kind"] == "strong" else 1)
@@ -913,6 +917,11 @@ def _repair_tree_levels(graph: dict) -> None:
             link.get("kind") != "weak"
             and link.get("source") in root_ids
             and link.get("target") in has_l1_parent
+        ) and not (
+            link.get("kind") != "weak"
+            and index.get(link.get("source"))
+            and index.get(link.get("target"))
+            and index[link["source"]].get("level") == index[link["target"]].get("level")
         )
     ]
 

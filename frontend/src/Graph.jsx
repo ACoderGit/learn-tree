@@ -271,11 +271,11 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     fg.d3Force("center").strength(0.16);
     fg.d3Force("link")
       .distance((l) => {
-        if (l.kind === "weak") return 290;
-        if (highLevelLink(l)) return 255;
+        if (l.kind === "weak") return 375;
+        if (highLevelLink(l)) return 330;
         const lvl = Math.min(l.source.level ?? 1, l.target.level ?? 1);
-        if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 78;
-        return importantLink(l) ? 245 : 160 + lvl * 26;
+        if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 100;
+        return importantLink(l) ? 320 : 208 + lvl * 34;
       })
       .strength((l) => {
         if (l.kind === "weak") return 0.08;
