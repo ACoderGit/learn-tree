@@ -248,10 +248,16 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       (target?.anchor && source?.level === 1)
     );
   };
+  const smallestNodeLink = (link) => {
+    const source = resolveNode(link.source);
+    const target = resolveNode(link.target);
+    return Boolean((source?.level ?? 0) >= 2 || (target?.level ?? 0) >= 2);
+  };
   const importantLink = (link) =>
-    !highLevelLink(link) && visualImportance(link.source) >= 5 && visualImportance(link.target) >= 4;
+    !smallestNodeLink(link) && !highLevelLink(link) && visualImportance(link.source) >= 5 && visualImportance(link.target) >= 4;
 
   const linkWeight = (link) => {
+    if (smallestNodeLink(link)) return 1.2;
     if (highLevelLink(link)) return 3.2;
     if (importantLink(link)) return 2.6;
     if (link.kind === "strong") return 2.1;
@@ -271,6 +277,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     fg.d3Force("center").strength(0.16);
     fg.d3Force("link")
       .distance((l) => {
+        if (smallestNodeLink(l)) return 100;
         if (l.kind === "weak") return 375;
         if (highLevelLink(l)) return 330;
         const lvl = Math.min(l.source.level ?? 1, l.target.level ?? 1);
@@ -278,6 +285,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
         return importantLink(l) ? 320 : 208 + lvl * 34;
       })
       .strength((l) => {
+        if (smallestNodeLink(l)) return 0.42;
         if (l.kind === "weak") return 0.08;
         if (highLevelLink(l)) return 0.42;
         if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 0.44;
@@ -718,8 +726,11 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     ctx.moveTo(sx, sy);
     ctx.lineTo(tx, ty);
     const highLevel = highLevelLink(link);
+    const smallest = smallestNodeLink(link);
     const important = importantLink(link);
-    ctx.strokeStyle = highLevel
+    ctx.strokeStyle = smallest
+      ? "rgba(150,162,174,0.28)"
+      : highLevel
       ? "rgba(180,226,215,0.54)"
       : important
       ? "rgba(210,231,225,0.74)"
@@ -728,7 +739,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
         : link.kind === "weak"
           ? "rgba(143,183,255,0.16)"
           : "rgba(140,153,168,0.22)";
-    ctx.lineWidth = (highLevel ? 2.1 : important ? 3 : link.kind === "strong" ? 2 : link.kind === "weak" ? 0.7 : 1) / globalScale;
+    ctx.lineWidth = (smallest ? 1 : highLevel ? 2.1 : important ? 3 : link.kind === "strong" ? 2 : link.kind === "weak" ? 0.7 : 1) / globalScale;
     ctx.stroke();
 
     const arrow = Math.max(5 / globalScale, 3);
@@ -815,7 +826,9 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
           ctx.fill();
         }}
         linkColor={(l) =>
-          highLevelLink(l)
+          smallestNodeLink(l)
+            ? "rgba(150,162,174,0.28)"
+            : highLevelLink(l)
             ? "rgba(180,226,215,0.54)"
             : importantLink(l)
             ? "rgba(210,231,225,0.74)"
@@ -825,7 +838,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
               ? "rgba(143,183,255,0.16)"
               : "rgba(140,153,168,0.22)"
         }
-        linkWidth={(l) => highLevelLink(l) ? 2.1 : importantLink(l) ? 3 : l.kind === "strong" ? 2 : l.kind === "weak" ? 0.7 : 1}
+        linkWidth={(l) => smallestNodeLink(l) ? 1 : highLevelLink(l) ? 2.1 : importantLink(l) ? 3 : l.kind === "strong" ? 2 : l.kind === "weak" ? 0.7 : 1}
         linkCanvasObjectMode={() => "replace"}
         linkCanvasObject={drawLink}
         linkCurvature={0.12}
