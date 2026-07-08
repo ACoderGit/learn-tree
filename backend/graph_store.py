@@ -720,6 +720,8 @@ def public(graph: dict) -> dict:
     neighbors: dict[str, list[tuple[str, float]]] = {n["id"]: [] for n in graph["nodes"]}
     children: dict[str, list[str]] = {n["id"]: [] for n in graph["nodes"]}
     for link in graph["links"]:
+        if link.get("kind") == "weak":
+            continue
         source = link.get("source")
         target = link.get("target")
         if source in by_id and target in by_id:
@@ -752,6 +754,8 @@ def public(graph: dict) -> dict:
         nodes.append(item)
     links = []
     for link in graph["links"]:
+        if link.get("kind") == "weak":
+            continue
         source = by_id.get(link.get("source"))
         target = by_id.get(link.get("target"))
         if source and target and source.get("level") == target.get("level"):
@@ -932,7 +936,7 @@ def _repair_tree_levels(graph: dict) -> None:
 
     graph["links"] = [
         link for link in graph["links"]
-        if not (
+        if link.get("kind") != "weak" and not (
             link.get("kind") != "weak"
             and link.get("source") in root_ids
             and link.get("target") in has_l1_parent
@@ -1040,12 +1044,6 @@ def merge(new_nodes: list[dict], reinforces: list[str], url: str) -> dict:
                 existing["seenDay"] = _eday(graph)
                 if url and url not in existing["sources"]:
                     existing["sources"].append(url)
-                for main in new_nodes:
-                    if main.get("level") == 0:
-                        continue
-                    mid = label_to_id.get(main["label"].lower())
-                    if mid and mid != existing["id"]:
-                        _add_link(graph, mid, existing["id"], link_seen, "weak")
 
         _flatten_level2_parents(graph)
         _repair_tree_levels(graph)
