@@ -207,6 +207,15 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     }
     return children;
   }, [graphData]);
+  const linkedPairs = useMemo(() => {
+    const pairs = new Set();
+    for (const link of graphData.links) {
+      const source = typeof link.source === "object" ? link.source.id : link.source;
+      const target = typeof link.target === "object" ? link.target.id : link.target;
+      pairs.add([source, target].sort().join("::"));
+    }
+    return pairs;
+  }, [graphData]);
 
   // Size = importance. Broad/main topics (low level) are biggest; reinforced
   // topics grow; older topics (smaller seq) get a small bonus.
@@ -219,7 +228,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     return base + countBoost + ageBoost;
   };
   const ringRadiusFor = (node) => {
-    if (node.anchor) return Math.max(78, 58 + Math.sqrt(childCounts[node.id] || 1) * 15);
+    if (node.anchor) return Math.max(92, 70 + Math.sqrt(childCounts[node.id] || 1) * 16);
     if ((node.level ?? 2) === 1 && childCounts[node.id]) {
       return Math.max(30, 22 + Math.sqrt(childCounts[node.id]) * 7);
     }
@@ -254,21 +263,25 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
   useEffect(() => {
     const fg = fgRef.current;
     if (!fg) return;
-    fg.d3Force("charge").strength((n) => -270 - ringRadiusFor(n) * 7).distanceMax(980);
+    fg.d3Force("charge").strength((n) => {
+      if (n.anchor) return -240;
+      if ((n.level ?? 2) === 1) return -130;
+      return -48;
+    }).distanceMax(520);
     fg.d3Force("center").strength(0.16);
     fg.d3Force("link")
       .distance((l) => {
         if (l.kind === "weak") return 250;
-        if (highLevelLink(l)) return 285;
+        if (highLevelLink(l)) return 220;
         const lvl = Math.min(l.source.level ?? 1, l.target.level ?? 1);
-        if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 78;
-        return importantLink(l) ? 265 : 175 + lvl * 28;
+        if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 62;
+        return importantLink(l) ? 210 : 135 + lvl * 22;
       })
       .strength((l) => {
         if (l.kind === "weak") return 0.08;
-        if (highLevelLink(l)) return 0.28;
-        if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 0.26;
-        return importantLink(l) ? 0.16 : 0.18;
+        if (highLevelLink(l)) return 0.42;
+        if ((l.source.level ?? 1) >= 1 && (l.target.level ?? 1) >= 2) return 0.44;
+        return importantLink(l) ? 0.24 : 0.28;
       });
     fg.d3ReheatSimulation();
     const settle = setTimeout(() => {
@@ -415,34 +428,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
     }
   };
 
-  const spreadLeavesFromRoots = () => {
-    for (const node of graphData.nodes) {
-      if ((node.level ?? 1) < 2) continue;
-      const root = nodeById[rootByNode[node.id]];
-      if (!root || !Number.isFinite(root.x) || !Number.isFinite(root.y)) continue;
-      if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) continue;
-
-      let dx = node.x - root.x;
-      let dy = node.y - root.y;
-      let dist = Math.sqrt(dx * dx + dy * dy);
-      if (!dist) {
-        dx = ((node.seq || 1) % 2 ? 1 : -1);
-        dy = ((node.seq || 1) % 3 ? 0.6 : -0.6);
-        dist = Math.sqrt(dx * dx + dy * dy);
-      }
-      const ux = dx / dist;
-      const uy = dy / dist;
-      const target = 190 + Math.min(80, (childCounts[root.id] || 1) * 7);
-      const closeness = Math.max(0, 1 - dist / target);
-      const outward = closeness * 1.35;
-      const sideSign = (node.seq || 0) % 2 ? 1 : -1;
-      const sideways = closeness * 0.55 * sideSign;
-
-      node.x += ux * outward + -uy * sideways;
-      node.y += uy * outward + ux * sideways;
-    }
-  };
-
   const separateOverlaps = () => {
     const nodes = graphData.nodes;
     for (let i = 0; i < nodes.length; i += 1) {
@@ -455,7 +440,10 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
           rootByNode[a.id] === rootByNode[b.id] &&
           (a.level ?? 1) >= 2 &&
           (b.level ?? 1) >= 2;
-        const min = ringRadiusFor(a) + ringRadiusFor(b) + (crossDomain ? 56 : sameSmallBranch ? 5 : 20);
+        const linked = linkedPairs.has([a.id, b.id].sort().join("::"));
+        const min = linked
+          ? radiusFor(a) + radiusFor(b) + 10
+          : ringRadiusFor(a) + ringRadiusFor(b) + (crossDomain ? 48 : sameSmallBranch ? 4 : 14);
         let dx = b.x - a.x;
         let dy = b.y - a.y;
         let dist = Math.sqrt(dx * dx + dy * dy);
@@ -465,7 +453,7 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
           dist = 1;
         }
         if (dist < min) {
-          const push = Math.min(4, (min - dist) * 0.24);
+          const push = Math.min(linked ? 1.2 : 3.2, (min - dist) * (linked ? 0.08 : 0.2));
           const ux = dx / dist;
           const uy = dy / dist;
           a.x -= ux * push;
@@ -475,7 +463,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
         }
       }
     }
-    spreadLeavesFromRoots();
     treeBoundaryForces();
     repelCrossingLinks();
   };
