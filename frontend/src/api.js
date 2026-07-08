@@ -19,9 +19,19 @@ export async function addSource(url) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ url }),
   });
-  const data = await r.json();
+  const data = await readResponse(r);
   if (!r.ok) throw new Error(data.error || "Failed to add source");
   return data;
+}
+
+async function readResponse(response) {
+  const text = await response.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { error: text.slice(0, 240) };
+  }
 }
 
 async function postJSON(path, body) {
@@ -30,8 +40,11 @@ async function postJSON(path, body) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  const data = await r.json();
-  if (!r.ok) throw new Error(data.error || "Request failed");
+  const data = await readResponse(r);
+  if (!r.ok) {
+    const status = `${r.status} ${r.statusText}`.trim();
+    throw new Error(data.error || `Request failed (${status})`);
+  }
   return data; // returns the updated graph
 }
 

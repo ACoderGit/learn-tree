@@ -175,7 +175,13 @@ def clear_graph():
 
 @app.post("/api/demo/load")
 def load_demo():
-    return graph_store.public(graph_store.load_demo_sources())
+    try:
+        return graph_store.public(graph_store.load_demo_sources())
+    except Exception as exc:
+        return JSONResponse(
+            {"error": f"Could not load demo data: {type(exc).__name__}: {exc}"},
+            status_code=500,
+        )
 
 
 @app.post("/api/node/add")

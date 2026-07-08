@@ -1068,13 +1068,18 @@ def load_demo_sources() -> dict:
     """Import saved demo source results without making any API calls."""
     graph = load()
     for item in DEMO_SOURCES:
-        remember_source(
-            item["url"],
-            item["title"],
-            item["nodes"],
-            item.get("reinforces", []),
-            item.get("provider", "demo"),
-        )
+        try:
+            remember_source(
+                item["url"],
+                item["title"],
+                item["nodes"],
+                item.get("reinforces", []),
+                item.get("provider", "demo"),
+            )
+        except OSError:
+            # Demo data is embedded in code; source-cache persistence is helpful
+            # but should never block loading the demo graph.
+            pass
         graph = merge(item["nodes"], item.get("reinforces", []), item["url"])
     return graph
 
