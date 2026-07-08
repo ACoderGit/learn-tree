@@ -646,15 +646,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
 
     if (borderOnly) {
       const ringR = ringRadiusFor(node);
-      ctx.save();
-      ctx.beginPath();
-      ctx.ellipse(node.x + ringR * 0.08, node.y + ringR * 0.1, ringR * 0.92, ringR * 0.82, 0, 0, 2 * Math.PI);
-      ctx.fillStyle = "rgba(0,0,0,0.18)";
-      ctx.filter = `blur(${Math.max(2, 7 / globalScale)}px)`;
-      ctx.fill();
-      ctx.filter = "none";
-      ctx.restore();
-
       const wash = ctx.createRadialGradient(node.x - ringR * 0.25, node.y - ringR * 0.28, ringR * 0.1, node.x, node.y, ringR);
       wash.addColorStop(0, `rgba(${cr},${cg},${cb},0.055)`);
       wash.addColorStop(0.64, `rgba(${cr},${cg},${cb},0.018)`);
@@ -670,16 +661,6 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       ctx.strokeStyle = selected
         ? "#ffffff"
         : `rgba(${cr},${cg},${cb},${node.anchor ? 0.88 : 0.7})`;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, ringR, -Math.PI * 0.82, -Math.PI * 0.18);
-      ctx.lineWidth = (node.anchor ? 2.8 : 2.1) / globalScale;
-      ctx.strokeStyle = "rgba(255,255,255,0.2)";
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, ringR, Math.PI * 0.2, Math.PI * 0.82);
-      ctx.lineWidth = (node.anchor ? 2.4 : 1.8) / globalScale;
-      ctx.strokeStyle = "rgba(0,0,0,0.28)";
       ctx.stroke();
       ctx.beginPath();
       ctx.arc(node.x, node.y, ringR - 7 / globalScale, 0, 2 * Math.PI);
@@ -719,59 +700,31 @@ export default function Graph({ data, onNodeClick, selectedId, visualOptions, ce
       ctx.fill();
     }
 
-    ctx.save();
-    ctx.beginPath();
-    ctx.ellipse(node.x + r * 0.18, node.y + r * 0.38, r * 0.8, r * 0.42, 0, 0, 2 * Math.PI);
-    ctx.fillStyle = "rgba(0,0,0,0.22)";
-    ctx.filter = `blur(${Math.max(1.5, 4 / globalScale)}px)`;
-    ctx.fill();
-    ctx.filter = "none";
-    ctx.restore();
-
     const body = ctx.createRadialGradient(
-      node.x - r * 0.42,
-      node.y - r * 0.48,
-      r * 0.05,
+      node.x - r * 0.32,
+      node.y - r * 0.38,
+      r * 0.12,
       node.x + r * 0.18,
       node.y + r * 0.24,
-      r * 1.34
+      r * 1.22
     );
     if (aged) {
       body.addColorStop(0, `rgba(158,166,180,${0.92 * ageFade})`);
       body.addColorStop(0.52, `rgba(105,114,128,${0.78 * ageFade})`);
       body.addColorStop(1, `rgba(52,59,70,${0.86 * ageFade})`);
     } else {
-      body.addColorStop(0, `rgba(${Math.min(cr + 82, 255)},${Math.min(cg + 82, 255)},${Math.min(cb + 82, 255)},${0.98 * ageFade})`);
-      body.addColorStop(0.34, `rgba(${Math.min(cr + 20, 255)},${Math.min(cg + 20, 255)},${Math.min(cb + 20, 255)},${0.94 * ageFade})`);
-      body.addColorStop(0.72, `rgba(${cr},${cg},${cb},${0.92 * ageFade})`);
-      body.addColorStop(1, `rgba(${Math.max(cr - 70, 0)},${Math.max(cg - 70, 0)},${Math.max(cb - 70, 0)},${0.98 * ageFade})`);
+      body.addColorStop(0, `rgba(${Math.min(cr + 58, 255)},${Math.min(cg + 58, 255)},${Math.min(cb + 58, 255)},${0.96 * ageFade})`);
+      body.addColorStop(0.5, `rgba(${cr},${cg},${cb},${0.92 * ageFade})`);
+      body.addColorStop(1, `rgba(${Math.max(cr - 52, 0)},${Math.max(cg - 52, 0)},${Math.max(cb - 52, 0)},${0.96 * ageFade})`);
     }
     ctx.beginPath();
     ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
     ctx.fillStyle = body;
     ctx.fill();
 
-    const rim = ctx.createLinearGradient(node.x - r, node.y - r, node.x + r, node.y + r);
-    rim.addColorStop(0, "rgba(255,255,255,0.32)");
-    rim.addColorStop(0.42, "rgba(255,255,255,0.04)");
-    rim.addColorStop(1, "rgba(0,0,0,0.36)");
     ctx.beginPath();
-    ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
-    ctx.lineWidth = Math.max(1 / globalScale, r * 0.11);
-    ctx.strokeStyle = rim;
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.ellipse(
-      node.x - r * 0.34,
-      node.y - r * 0.42,
-      Math.max(r * 0.26, 2 / globalScale),
-      Math.max(r * 0.16, 1.3 / globalScale),
-      -0.65,
-      0,
-      2 * Math.PI
-    );
-    ctx.fillStyle = "rgba(255,255,255,0.26)";
+    ctx.arc(node.x - r * 0.32, node.y - r * 0.35, Math.max(r * 0.25, 2 / globalScale), 0, 2 * Math.PI);
+    ctx.fillStyle = "rgba(255,255,255,0.18)";
     ctx.fill();
 
     drawConfidenceArc(ctx, node, r, cr, cg, cb, globalScale);
