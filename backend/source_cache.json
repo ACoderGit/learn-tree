@@ -1,0 +1,347 @@
+{
+  "https://online.stanford.edu/courses/mse232-introduction-game-theory": {
+    "url": "https://online.stanford.edu/courses/mse232-introduction-game-theory",
+    "title": "Introduction to Game Theory",
+    "nodes": [
+      {
+        "label": "Mathematics",
+        "level": 0,
+        "parent": null,
+        "summary": "Formal reasoning and quantitative models"
+      },
+      {
+        "label": "Game Theory",
+        "level": 1,
+        "parent": "Mathematics",
+        "summary": "Strategic decision-making models"
+      },
+      {
+        "label": "Strategic Reasoning",
+        "level": 2,
+        "parent": "Game Theory",
+        "summary": "Reasoning about other agents"
+      },
+      {
+        "label": "Nash Equilibrium",
+        "level": 2,
+        "parent": "Game Theory",
+        "summary": "Stable strategic outcomes"
+      }
+    ],
+    "reinforces": [],
+    "provider": "demo"
+  },
+  "demo://react-state-management": {
+    "url": "demo://react-state-management",
+    "title": "React State Management",
+    "nodes": [
+      {
+        "label": "Programming",
+        "level": 0,
+        "parent": null,
+        "summary": "Building software systems"
+      },
+      {
+        "label": "React",
+        "level": 1,
+        "parent": "Programming",
+        "summary": "Component-based UI development"
+      },
+      {
+        "label": "State Management",
+        "level": 2,
+        "parent": "React",
+        "summary": "Coordinating changing interface data"
+      }
+    ],
+    "reinforces": [],
+    "provider": "demo"
+  },
+  "demo://gradient-descent": {
+    "url": "demo://gradient-descent",
+    "title": "Gradient Descent Basics",
+    "nodes": [
+      {
+        "label": "Mathematics",
+        "level": 0,
+        "parent": null,
+        "summary": "Formal reasoning and quantitative models"
+      },
+      {
+        "label": "Optimization",
+        "level": 1,
+        "parent": "Mathematics",
+        "summary": "Finding better solutions"
+      },
+      {
+        "label": "Gradient Descent",
+        "level": 2,
+        "parent": "Optimization",
+        "summary": "Iterative loss minimization"
+      }
+    ],
+    "reinforces": [
+      "Mathematics"
+    ],
+    "provider": "demo"
+  },
+  "https://www.youtube.com/watch?v=EbjXc2oIm0Y": {
+    "url": "https://www.youtube.com/watch?v=EbjXc2oIm0Y",
+    "title": "IUPAC Organic Nomenclature",
+    "nodes": [
+      {
+        "label": "Science",
+        "level": 0,
+        "parent": null,
+        "summary": "Natural-world concepts and systems"
+      },
+      {
+        "label": "IUPAC Organic Nomenclature",
+        "level": 1,
+        "parent": "Science",
+        "summary": "Systematic naming of organic molecules"
+      },
+      {
+        "label": "Alkanes",
+        "level": 2,
+        "parent": "IUPAC Organic Nomenclature",
+        "summary": "Single-bond hydrocarbons use -ane"
+      },
+      {
+        "label": "Alkenes",
+        "level": 2,
+        "parent": "IUPAC Organic Nomenclature",
+        "summary": "Double-bond hydrocarbons use -ene"
+      },
+      {
+        "label": "Alkynes",
+        "level": 2,
+        "parent": "IUPAC Organic Nomenclature",
+        "summary": "Triple-bond hydrocarbons use -yne"
+      },
+      {
+        "label": "Alcohols",
+        "level": 2,
+        "parent": "IUPAC Organic Nomenclature",
+        "summary": "Hydroxyl groups use -ol"
+      }
+    ],
+    "reinforces": [
+      "Science"
+    ],
+    "provider": "demo"
+  },
+  "demo://organic-functional-groups": {
+    "url": "demo://organic-functional-groups",
+    "title": "Organic Functional Groups",
+    "nodes": [
+      {
+        "label": "Science",
+        "level": 0,
+        "parent": null,
+        "summary": "Natural-world concepts and systems"
+      },
+      {
+        "label": "IUPAC Organic Nomenclature",
+        "level": 1,
+        "parent": "Science",
+        "summary": "Systematic naming of organic molecules"
+      },
+      {
+        "label": "Functional Group Priority",
+        "level": 2,
+        "parent": "IUPAC Organic Nomenclature",
+        "summary": "Higher-priority groups determine suffixes"
+      },
+      {
+        "label": "Alcohols",
+        "level": 2,
+        "parent": "IUPAC Organic Nomenclature",
+        "summary": "Hydroxyl groups use -ol"
+      }
+    ],
+    "reinforces": [
+      "Science",
+      "Alcohols"
+    ],
+    "provider": "demo"
+  },
+  "demo://react-components": {
+    "url": "demo://react-components",
+    "title": "React Components",
+    "nodes": [
+      {
+        "label": "Programming",
+        "level": 0,
+        "parent": null,
+        "summary": "Building software systems"
+      },
+      {
+        "label": "React",
+        "level": 1,
+        "parent": "Programming",
+        "summary": "Component-based UI development"
+      },
+      {
+        "label": "Components",
+        "level": 2,
+        "parent": "React",
+        "summary": "Reusable interface building blocks"
+      }
+    ],
+    "reinforces": [
+      "Programming",
+      "React"
+    ],
+    "provider": "demo"
+  },
+  "demo://spanish-pronunciation-practice": {
+    "url": "demo://spanish-pronunciation-practice",
+    "title": "Spanish Pronunciation Practice",
+    "nodes": [
+      {
+        "label": "Languages",
+        "level": 0,
+        "parent": null,
+        "summary": "Human language learning"
+      },
+      {
+        "label": "Spanish Language Fundamentals",
+        "level": 1,
+        "parent": "Languages",
+        "summary": "Core Spanish pronunciation and alphabet"
+      },
+      {
+        "label": "Spanish Vowel System",
+        "level": 2,
+        "parent": "Spanish Language Fundamentals",
+        "summary": "Vowels keep consistent sounds"
+      }
+    ],
+    "reinforces": [
+      "Languages",
+      "Spanish Vowel System"
+    ],
+    "provider": "demo"
+  },
+  "https://en.wikipedia.org/wiki/French_phonology": {
+    "url": "https://en.wikipedia.org/wiki/French_phonology",
+    "title": "French Phonology",
+    "nodes": [
+      {
+        "label": "Languages",
+        "level": 0,
+        "parent": null,
+        "summary": "Human language learning"
+      },
+      {
+        "label": "French Language Fundamentals",
+        "level": 1,
+        "parent": "Languages",
+        "summary": "Core French sounds and speech patterns"
+      },
+      {
+        "label": "French Vowel Sounds",
+        "level": 2,
+        "parent": "French Language Fundamentals",
+        "summary": "Oral and nasal vowel contrasts"
+      },
+      {
+        "label": "Nasal Vowels",
+        "level": 2,
+        "parent": "French Language Fundamentals",
+        "summary": "Airflow through nose shapes meaning"
+      },
+      {
+        "label": "French Liaison",
+        "level": 2,
+        "parent": "French Language Fundamentals",
+        "summary": "Final consonants connect before vowels"
+      }
+    ],
+    "reinforces": [
+      "Languages"
+    ],
+    "provider": "demo"
+  },
+  "https://en.wikipedia.org/wiki/Progressive_overload": {
+    "url": "https://en.wikipedia.org/wiki/Progressive_overload",
+    "title": "Progressive Overload",
+    "nodes": [
+      {
+        "label": "Fitness",
+        "level": 0,
+        "parent": null,
+        "summary": "Training, health, and physical adaptation"
+      },
+      {
+        "label": "Strength Training",
+        "level": 1,
+        "parent": "Fitness",
+        "summary": "Training to build force output"
+      },
+      {
+        "label": "Progressive Overload",
+        "level": 2,
+        "parent": "Strength Training",
+        "summary": "Gradually increasing training stress"
+      },
+      {
+        "label": "Training Volume",
+        "level": 2,
+        "parent": "Strength Training",
+        "summary": "Sets, reps, and total workload"
+      },
+      {
+        "label": "Recovery Management",
+        "level": 2,
+        "parent": "Strength Training",
+        "summary": "Balancing stress with adaptation"
+      }
+    ],
+    "reinforces": [
+      "Fitness"
+    ],
+    "provider": "demo"
+  },
+  "https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion": {
+    "url": "https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion",
+    "title": "Newton's Laws of Motion",
+    "nodes": [
+      {
+        "label": "Science",
+        "level": 0,
+        "parent": null,
+        "summary": "Natural-world concepts and systems"
+      },
+      {
+        "label": "Classical Mechanics",
+        "level": 1,
+        "parent": "Science",
+        "summary": "Motion, forces, and physical systems"
+      },
+      {
+        "label": "Newton's Laws",
+        "level": 2,
+        "parent": "Classical Mechanics",
+        "summary": "Rules connecting force and motion"
+      },
+      {
+        "label": "Inertia",
+        "level": 2,
+        "parent": "Classical Mechanics",
+        "summary": "Motion persists without net force"
+      },
+      {
+        "label": "Force and Acceleration",
+        "level": 2,
+        "parent": "Classical Mechanics",
+        "summary": "Net force changes motion"
+      }
+    ],
+    "reinforces": [
+      "Science"
+    ],
+    "provider": "demo"
+  }
+}

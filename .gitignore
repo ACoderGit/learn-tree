@@ -1,0 +1,14 @@
+# Secrets — never commit your API key
+backend/.env
+
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+
+# Local data
+backend/graph.json

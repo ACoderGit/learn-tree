@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:8000/api/graph)",
+      "Bash(lsof -ti:8000)",
+      "Bash(xargs kill)",
+      "Bash(chmod +x /Users/asherwaine/Desktop/tree/run.sh)",
+      "Bash(echo \"port 8000: $\\(lsof -ti:8000 || echo free\\)\")",
+      "Bash(lsof -ti:5173)",
+      "Bash(./.venv/bin/uvicorn main:app --port 8000)",
+      "Bash(curl -s http://localhost:8000/api/status)",
+      "Bash(break)",
+      "Bash(echo \"backend: $\\(curl -s http://localhost:8000/api/status || echo DOWN\\)\")",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:5173)",
+      "Bash(echo \"frontend: $\\(curl -s -o /dev/null -w '%{http_code}' http://localhost:5173\\)\")",
+      "Skill(claude-api)",
+      "Skill(claude-api:*)",
+      "Bash(./.venv/bin/pip install *)",
+      "Bash(./.venv/bin/python -c \"import anthropic; print\\('anthropic', anthropic.__version__\\); import main, llm, extract, graph_store; print\\('modules OK'\\); print\\('provider:', llm.active_provider\\(\\)\\)\")",
+      "Bash(echo \"status: $\\(curl -s http://localhost:8000/api/status\\)\")",
+      "Bash(echo \"engine: $\\(curl -s http://localhost:8000/api/status\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('engine:',d.get\\('provider'\\)\\); [print\\(' ','• '*n['level'], n['label'], '—', n['summary']\\) for n in d['graph']['nodes']]\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('engine:',d.get\\('provider'\\)\\); print\\('total topics now:', len\\(d['graph']['nodes']\\)\\)\")",
+      "Bash(echo \"reset. current: $\\(curl -s http://localhost:8000/api/graph\\)\")",
+      "Bash(./.venv/bin/python -c \"import main, graph_store; print\\('imports OK'\\)\")",
+      "Bash(./.venv/bin/python -c \"import main, llm; print\\('imports OK'\\)\")",
+      "Bash(curl -s -X POST http://localhost:8000/api/add -H \"Content-Type: application/json\" -d '{\"url\":\"https://www.youtube.com/watch?v=aircAruvnKk\"}')",
+      "Bash(python3 -c \"import sys,json;g=json.load\\(sys.stdin\\);c={};[c.__setitem__\\(n['count'],c.get\\(n['count'],0\\)+1\\) for n in g['nodes']];print\\('count distribution:',c\\)\")",
+      "Bash(curl -s -X POST http://localhost:8000/api/clear)",
+      "Bash(echo \"cleared: $\\(curl -s http://localhost:8000/api/graph\\)\")"
+    ]
+  }
+}
